@@ -1,0 +1,18 @@
+server:
+  port: ${SERVER_PORT:8080}
+
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          keycloak:
+            provider: keycloak
+            client-id: catsgram
+            client-secret: lcftlbsJalSbJL5SSoK8KRo8Q5stYKg1
+            client-name: catsgram
+            authorization-grant-type: authorization_code
+            scope: openid, profile, email
+      resourceserver:
+        jwt:
+          issuer-uri: ${ISSUER_URI:http://localhost:9091/realms/catsgram}

@@ -1,0 +1,4 @@
+ru\practicum\controller\TestController.class
+ru\practicum\AuthServiceApp.class
+ru\practicum\config\SecurityConfig.class
+ru\practicum\config\KeycloakAuthenticationConverter.class
