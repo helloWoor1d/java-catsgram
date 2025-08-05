@@ -14,7 +14,7 @@ public class KeycloakAuthenticationConverter implements Converter<Jwt, Collectio
     @Override
     public Collection<GrantedAuthority> convert(Jwt jwt) {
         List<String> roles = jwt.getClaimAsStringList("roles");
-        if(roles == null) return Collections.emptyList();
+        if (roles == null) return Collections.emptyList();
 
         return roles.stream()
                 .map(SimpleGrantedAuthority::new)
