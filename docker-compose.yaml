@@ -1,0 +1,63 @@
+services:
+  postgres:
+    image: postgres:17.5-alpine
+    container_name: postgres_keycloak
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: keycloak
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - keycloak_net
+
+  keycloak:
+    image: bitnami/keycloak:26.3.2
+    container_name: keycloak
+    environment:
+      KEYCLOAK_DATABASE_HOST: postgres
+      KEYCLOAK_DATABASE_PORT: 5432
+      KEYCLOAK_DATABASE_NAME: keycloak
+      KEYCLOAK_DATABASE_USER: keycloak
+      KEYCLOAK_DATABASE_PASSWORD: keycloak
+      KEYCLOAK_HOSTNAME: localhost
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    ports:
+      - "9091:8080"
+    depends_on:
+      - postgres
+    networks:
+      - keycloak_net
+
+  kafka:
+    container_name: kafka_catsgrm
+    image: 'bitnami/kafka:latest'
+    ports:
+      - "9098:9098"
+      - "29098:29098" # для подключения с хоста
+    environment:
+      # KRaft settings
+      - KAFKA_CFG_NODE_ID=0
+      - KAFKA_CFG_PROCESS_ROLES=controller,broker
+      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=0@kafka:9099
+      # Listeners
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9098,CONTROLLER://:9099,EXTERNAL://:29098
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9098,EXTERNAL://localhost:29098
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,EXTERNAL:PLAINTEXT
+      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
+      - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=PLAINTEXT
+    healthcheck:
+      test: [ "CMD", "kafka-topics.sh", "--bootstrap-server", "localhost:9098", "--list" ]
+      start_period: 15s
+      interval: 5s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  postgres_data:
+
+networks:
+  keycloak_net:
