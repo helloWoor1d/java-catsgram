@@ -1,4 +1,4 @@
-package ru.practicum.config;
+package ru.practicum.config.security;
 
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.core.GrantedAuthority;
