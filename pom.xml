@@ -12,12 +12,14 @@
         <module>auth-service</module>
         <module>user-service</module>
         <module>post-service</module>
+        <module>eureka-server</module>
     </modules>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <slf4j.version>2.0.17</slf4j.version>
     </properties>
 
 </project>

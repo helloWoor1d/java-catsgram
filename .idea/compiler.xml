@@ -9,6 +9,7 @@
         <module name="post-service" />
         <module name="auth-service" />
         <module name="user-service" />
+        <module name="eureka-server" />
       </profile>
     </annotationProcessing>
   </component>
