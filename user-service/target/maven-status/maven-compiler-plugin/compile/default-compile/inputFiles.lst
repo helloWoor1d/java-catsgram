@@ -1,1 +1,5 @@
-D:\IdeaProjects\java-catsgram\user-service\src\main\java\ru\practicum\Main.java
+D:\IdeaProjects\java-catsgram\user-service\src\main\java\ru\practicum\config\KafkaConsumerConfig.java
+D:\IdeaProjects\java-catsgram\user-service\src\main\java\ru\practicum\event\UserRegisteredEvent.java
+D:\IdeaProjects\java-catsgram\user-service\src\main\java\ru\practicum\listener\UserRegisteredListener.java
+D:\IdeaProjects\java-catsgram\user-service\src\main\java\ru\practicum\model\Profile.java
+D:\IdeaProjects\java-catsgram\user-service\src\main\java\ru\practicum\UserServiceApp.java
