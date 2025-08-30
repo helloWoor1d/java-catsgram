@@ -12,6 +12,6 @@ public class UserRegisteredListener {
             groupId = "user-service-group",
             containerFactory = "userRegisteredEventContainerFactory")
     public void onUserRegisteredEvent(UserRegisteredEvent event) {
-        log.info("Listener: userRegisteredEvent - {}", event.getUsername());
+        log.info("Listener: user registered - {}", event.getUsername());
     }
 }
