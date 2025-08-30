@@ -30,10 +30,11 @@ public class KafkaProducer {
 
     public void userDelete(String id) {
         UserDeletedEvent userDeleteEvent = UserDeletedEvent.builder()
-                .id(id)
+                .userId(id)
+                .deletedAt(LocalDateTime.now())
                 .build();
 
         deleteTemplate.send("user-deleting", userDeleteEvent);
-        log.debug("Kafka: event UserDeleted success published: {}", userDeleteEvent);
+        log.debug("Kafka: event UserDeleted success published: {}", userDeleteEvent.getUserId());
     }
 }

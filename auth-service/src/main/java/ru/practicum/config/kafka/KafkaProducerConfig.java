@@ -36,12 +36,12 @@ public class KafkaProducerConfig {
     }
 
     @Bean
-    public ProducerFactory<String, UserDeletedEvent> userDeleteEventProducerFactory() {
+    public ProducerFactory<String, UserDeletedEvent> userDeleteEventProducerFactory(ObjectMapper objectMapper) {
         Map<String, Object> props = new HashMap<>();
 
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
 
-        JsonSerializer<UserDeletedEvent> eventSerializer = new JsonSerializer<>(new ObjectMapper());
+        JsonSerializer<UserDeletedEvent> eventSerializer = new JsonSerializer<>(objectMapper);
         eventSerializer.setAddTypeInfo(false);
 
         return new DefaultKafkaProducerFactory<>(props,

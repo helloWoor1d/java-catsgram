@@ -14,8 +14,9 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @ToString
+
 @Builder
 public class UserDeletedEvent {
-    private String id;
+    private String userId;
     private LocalDateTime deletedAt;
 }
