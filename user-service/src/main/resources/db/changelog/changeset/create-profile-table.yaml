@@ -1,0 +1,44 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-profile-table
+      author: mira
+      changes:
+        - createTable:
+            tableName: profiles
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: keycloak_id
+                  type: varchar(150)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: login
+                  type: varchar(100)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: email
+                  type: varchar(512)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: bio
+                  type: varchar(150)
+              - column:
+                  name: avatar
+                  type: text
+              - column:
+                  name: created
+                  type: timestamp
+                  constraints:
+                    nullable: false
