@@ -5,6 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,8 +27,12 @@ import java.time.LocalDateTime;
 @Table(name = "profiles")
 public class Profile {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE) //toDo: настроить Sequence
-    private long id;
+    @GeneratedValue(generator = "id_seq", strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(
+            name = "id_seq",
+            sequenceName = "profiles_id_seq",
+            allocationSize = 15)
+    private Long id;
 
     @Column(name = "keycloak_id")
     private String keycloakId;
@@ -41,6 +46,13 @@ public class Profile {
     @Column(name = "avatar")
     private String avatarUrl;
 
-    @Column(name = "created")
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
+
+    @Column(name = "deactivated")
+    @Builder.Default
+    private Boolean isDeactivated = Boolean.FALSE;
+
+    @Column(name = "deactivated_at")
+    private LocalDateTime deactivatedAt;
 }

@@ -38,7 +38,15 @@ databaseChangeLog:
                   name: avatar
                   type: text
               - column:
-                  name: created
+                  name: created_at
                   type: timestamp
                   constraints:
                     nullable: false
+              - column:
+                  name: deactivated
+                  type: boolean
+                  constraints:
+                    nullable: false
+              - column:
+                  name: deactivated_at
+                  type: timestamp

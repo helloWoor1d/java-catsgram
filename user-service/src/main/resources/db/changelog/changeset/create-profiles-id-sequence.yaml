@@ -1,0 +1,11 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-profiles-id-seq
+      author: mira
+      changes:
+        - createSequence:
+            sequenceName: profiles_id_seq
+            startValue: 1
+            incrementBy: 1
+            cacheSize: 15
+            dataType: BIGINT

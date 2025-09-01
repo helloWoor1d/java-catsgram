@@ -1,17 +1,23 @@
 package ru.practicum.listener;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 import ru.practicum.event.UserRegisteredEvent;
+import ru.practicum.service.UserService;
 
+@RequiredArgsConstructor
 @Slf4j
 @Service
 public class UserRegisteredListener {
+    private final UserService userService;
+
     @KafkaListener(topics = "${app.kafka.topics.user.registration}",
             groupId = "user-service-group",
             containerFactory = "userRegisteredEventContainerFactory")
     public void onUserRegisteredEvent(UserRegisteredEvent event) {
-        log.info("Listener: user registered - {}", event.getUsername());
+        userService.create(event);
+        log.info("Listener: user registered - {}", event.getUserId());
     }
 }
