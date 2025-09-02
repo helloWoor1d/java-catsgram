@@ -14,7 +14,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Slf4j
 @Service
-public class UserService {
+public class UserServiceImpl implements UserService {
     private final ProfileRepository profileRepository;
 
     public void create(UserRegisteredEvent event) {
