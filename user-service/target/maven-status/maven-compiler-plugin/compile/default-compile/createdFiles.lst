@@ -1,7 +1,0 @@
-ru\practicum\event\UserRegisteredEvent.class
-ru\practicum\config\KafkaConsumerConfig.class
-ru\practicum\listener\UserRegisteredListener.class
-ru\practicum\UserServiceApp.class
-ru\practicum\event\UserRegisteredEvent$UserRegisteredEventBuilder.class
-ru\practicum\model\Profile$ProfileBuilder.class
-ru\practicum\model\Profile.class

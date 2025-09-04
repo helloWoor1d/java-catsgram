@@ -10,7 +10,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>auth-service</module>
-        <module>user-service</module>
+        <module>profile-service</module>
         <module>post-service</module>
         <module>eureka-server</module>
     </modules>
