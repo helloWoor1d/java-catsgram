@@ -8,7 +8,7 @@ import ru.practicum.model.Profile;
 
 @Mapper(componentModel = "spring")
 public interface ProfileMapper {
-    ProfileView toView(Profile profileView);
+    ProfileView toView(Profile profile);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "authProviderId", source = "authId")

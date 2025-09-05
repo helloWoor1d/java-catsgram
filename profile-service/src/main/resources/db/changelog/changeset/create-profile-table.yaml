@@ -14,7 +14,7 @@ databaseChangeLog:
                     primaryKey: true
                     nullable: false
               - column:
-                  name: oauth_id
+                  name: auth_id
                   type: varchar(150)
                   constraints:
                     nullable: false
