@@ -23,10 +23,10 @@ public class ProfileServiceImpl implements ProfileService {
                 .orElseThrow(() -> new EntityNotFoundException("No profile found for keycloakId: " + keycloakId));
     }
 
-    public Profile getProfile(String login) {
-        log.debug("Get profile by login: {}", login);
-        return profileRepository.findProfileByLogin(login)
-                .orElseThrow(() -> new EntityNotFoundException("No profile found for login: " + login));
+    public Profile getProfile(Long postId) {
+        log.debug("Get profile by id: {}", postId);
+        return profileRepository.findById(postId)
+                .orElseThrow(() -> new EntityNotFoundException("No profile found for id: " + postId));
     }
 
     public void createProfile(UserRegisteredEvent event) {

@@ -20,6 +20,8 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
+        hbm2ddl:
+          auto: none
 
   security:
     oauth2:
@@ -27,6 +29,10 @@ spring:
         jwt:
           issuer-uri: http://localhost:9091/realms/catsgram
           jwk-set-uri: http://localhost:9091/realms/catsgram/protocol/openid-connect/certs
+
+  liquibase:
+    enabled: true
+    change-log: db/changelog/db.changelog-master.yaml
 
 app:
   kafka:

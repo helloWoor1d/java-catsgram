@@ -13,6 +13,8 @@ import lombok.Setter;
 @Setter
 
 public class ProfileView {
+    private Long id;
+
     private String email;
 
     private String login;

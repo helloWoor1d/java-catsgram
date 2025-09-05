@@ -7,7 +7,7 @@ import ru.practicum.model.Profile;
 public interface ProfileService {
     Profile getCurrentProfile(String id);
 
-    Profile getProfile(String login);
+    Profile getProfile(Long id);
 
     void createProfile(UserRegisteredEvent event);
 
