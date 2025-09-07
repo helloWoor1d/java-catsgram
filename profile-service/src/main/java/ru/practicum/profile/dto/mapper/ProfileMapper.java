@@ -1,10 +1,10 @@
-package ru.practicum.dto.mapper;
+package ru.practicum.profile.dto.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import ru.practicum.dto.ProfileView;
-import ru.practicum.dto.UpdateProfileReq;
-import ru.practicum.model.Profile;
+import ru.practicum.profile.dto.ProfileView;
+import ru.practicum.profile.dto.UpdateProfileReq;
+import ru.practicum.profile.model.Profile;
 
 @Mapper(componentModel = "spring")
 public interface ProfileMapper {

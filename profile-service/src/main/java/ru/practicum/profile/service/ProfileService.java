@@ -1,20 +1,23 @@
-package ru.practicum.service;
+package ru.practicum.profile.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.practicum.event.UserDeletedEvent;
-import ru.practicum.event.UserRegisteredEvent;
-import ru.practicum.model.Profile;
-import ru.practicum.repository.ProfileRepository;
+import ru.practicum.profile.event.UserDeletedEvent;
+import ru.practicum.profile.event.UserRegisteredEvent;
+import ru.practicum.profile.model.Profile;
+import ru.practicum.profile.repository.ProfileRepository;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Slf4j
 @Service
-public class ProfileServiceImpl implements ProfileService {
+public class ProfileService {
     private final ProfileRepository profileRepository;
 
     public Profile getCurrentProfile(String keycloakId) {
@@ -66,5 +69,12 @@ public class ProfileServiceImpl implements ProfileService {
         }
 
         return profileRepository.save(saved);
+    }
+
+    public Map<Long, Profile> getProfilesByIds(List<Long> ids) {
+        log.debug("Get profiles by ids: {}", ids);
+        return profileRepository
+                .findAllByIdIn(ids).stream()
+                .collect(Collectors.toMap(Profile::getId, profile -> profile));
     }
 }

@@ -1,12 +1,11 @@
-package ru.practicum.controller;
+package ru.practicum.profile.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.apache.kafka.common.protocol.types.Field;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,53 +13,55 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.practicum.dto.ProfileView;
-import ru.practicum.dto.UpdateProfileReq;
-import ru.practicum.dto.mapper.ProfileMapper;
-import ru.practicum.model.Profile;
-import ru.practicum.service.ProfileService;
+import ru.practicum.follow.model.Follow;
+import ru.practicum.follow.service.FollowService;
+import ru.practicum.profile.dto.ProfileView;
+import ru.practicum.profile.dto.UpdateProfileReq;
+import ru.practicum.profile.dto.mapper.ProfileMapper;
+import ru.practicum.profile.model.Profile;
+import ru.practicum.profile.service.ProfileService;
 
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1/profiles")
 public class ProfilePublicController {
     private final ProfileService profileService;
-    private final ProfileMapper profileMapper;
+    private final FollowService followService;    private final ProfileMapper profileMapper;
 
     @GetMapping("/me")
-    public ResponseEntity<ProfileView> getProfile(Authentication auth) {
-        Jwt jwt = (Jwt) auth.getPrincipal();
+    public ResponseEntity<ProfileView> getProfile(@AuthenticationPrincipal Jwt jwt) {
         String keycloakId = jwt.getSubject();
 
-        return ResponseEntity.ok(
-                profileMapper.toView(
+        return ResponseEntity.ok(profileMapper.toView(
                         profileService.getCurrentProfile(keycloakId)));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ProfileView> getProfile(@PathVariable Long id) {
-        return ResponseEntity.ok(
-                profileMapper.toView(
+        return ResponseEntity.ok(profileMapper.toView(
                         profileService.getProfile(id)));
     }
 
     @PatchMapping
-    public ResponseEntity<ProfileView> updateProfile(Authentication authentication,
+    public ResponseEntity<ProfileView> updateProfile(@AuthenticationPrincipal Jwt jwt,
                                                      @RequestBody @Valid UpdateProfileReq updateReq) {
-        Jwt jwt = (Jwt) authentication.getPrincipal();
         String keycloakId = jwt.getSubject();
-
         Profile profile = profileMapper.toProfile(updateReq, keycloakId);
 
-        return ResponseEntity.ok(
-                profileMapper.toView(
+        return ResponseEntity.ok(profileMapper.toView(
                         profileService.updateProfile(profile)));
     }
 
     @PostMapping("/{followingId}/follow")
-    public ResponseEntity<String> followProfile(@AuthenticationPrincipal Jwt jwt,
+    public ResponseEntity<Follow> followProfile(@AuthenticationPrincipal Jwt jwt,
                                                 @PathVariable Long followingId) {
+        Follow follow = followService.follow(jwt.getSubject(), followingId);
+        return ResponseEntity.ok(follow);
+    }
 
-        return ResponseEntity.ok("Подписссссска: " + jwt.getSubject() + " - " + followingId);
+    @DeleteMapping("/{followingId}/follow")
+    public void unfollowProfile(@AuthenticationPrincipal Jwt jwt,
+                                @PathVariable Long followingId) {
+        followService.unfollow(jwt.getSubject(), followingId);
     }
 }

@@ -1,0 +1,58 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2025-09-07-create-follows-table
+      author: mira
+      changes:
+        - createTable:
+            tableName: follows
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: follower_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: following_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: status
+                  type: boolean
+                  constraints:
+                    nullable: false
+              - column:
+                  name: followed_at
+                  type: timestamp
+                  constraints:
+                    nullable: false
+
+        - addForeignKeyConstraint:
+            constraintName: fk_followers_follower_id
+            baseTableSchemaName: public
+            baseTableName: follows
+            baseColumnNames: follower_id
+            referencedTableSchemaName: public
+            referencedTableName: profiles
+            referencedColumnNames: id
+
+        - addForeignKeyConstraint:
+            constraintName: fk_followers_following_id
+            baseTableSchemaName: public
+            baseTableName: follows
+            baseColumnNames: following_id
+            referencedTableSchemaName: public
+            referencedTableName: profiles
+            referencedColumnNames: id
+
+        - addUniqueConstraint:
+            constraintName: unique_follower_id_following_id
+            tableName: follows
+            columnNames: follower_id, following_id

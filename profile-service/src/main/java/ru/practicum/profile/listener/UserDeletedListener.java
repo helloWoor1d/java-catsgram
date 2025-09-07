@@ -1,11 +1,11 @@
-package ru.practicum.listener;
+package ru.practicum.profile.listener;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
-import ru.practicum.event.UserDeletedEvent;
-import ru.practicum.service.ProfileService;
+import ru.practicum.profile.event.UserDeletedEvent;
+import ru.practicum.profile.service.ProfileService;
 
 @RequiredArgsConstructor
 @Slf4j

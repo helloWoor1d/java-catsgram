@@ -1,22 +1,15 @@
-package ru.practicum.dto;
+package ru.practicum.profile.dto;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Builder
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
-
-public class ProfileView {
-    private Long id;
-
-    private String email;
-
+public class UpdateProfileReq {
     private String login;
 
     private String bio;

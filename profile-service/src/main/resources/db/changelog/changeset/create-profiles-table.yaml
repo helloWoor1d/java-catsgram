@@ -1,6 +1,6 @@
 databaseChangeLog:
   - changeSet:
-      id: create-profile-table
+      id: create-profiles-table
       author: mira
       changes:
         - createTable:
