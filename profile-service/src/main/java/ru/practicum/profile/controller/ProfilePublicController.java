@@ -21,6 +21,8 @@ import ru.practicum.profile.dto.mapper.ProfileMapper;
 import ru.practicum.profile.model.Profile;
 import ru.practicum.profile.service.ProfileService;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1/profiles")
@@ -37,8 +39,8 @@ public class ProfilePublicController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProfileView> getProfile(@PathVariable Long id) {
-        return ResponseEntity.ok(profileMapper.toView(
+    public ResponseEntity<ProfileView> getProfile(@PathVariable Long id) {  // toDo: открытый профиль -> всем
+        return ResponseEntity.ok(profileMapper.toView(                     // ToDo: закрытый -> полный только одобренным подписчикам, основная инфа всем
                         profileService.getProfile(id)));
     }
 
@@ -59,7 +61,7 @@ public class ProfilePublicController {
         return ResponseEntity.ok(follow);
     }
 
-    @DeleteMapping("/{followingId}/follow")
+    @DeleteMapping("/{followingId}/unfollow")
     public void unfollowProfile(@AuthenticationPrincipal Jwt jwt,
                                 @PathVariable Long followingId) {
         followService.unfollow(jwt.getSubject(), followingId);

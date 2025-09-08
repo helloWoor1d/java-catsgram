@@ -3,6 +3,7 @@ package ru.practicum.follow.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.follow.model.Follow;
 import ru.practicum.follow.repository.FollowRepository;
 import ru.practicum.profile.model.Profile;
@@ -12,7 +13,9 @@ import java.time.LocalDateTime;
 
 @Slf4j
 @RequiredArgsConstructor
+
 @Service
+@Transactional
 public class FollowService {
     private final ProfileService profileService;
     private final FollowRepository followRepository;

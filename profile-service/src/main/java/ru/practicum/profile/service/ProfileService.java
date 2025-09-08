@@ -4,28 +4,30 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.profile.event.UserDeletedEvent;
 import ru.practicum.profile.event.UserRegisteredEvent;
 import ru.practicum.profile.model.Profile;
 import ru.practicum.profile.repository.ProfileRepository;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
-@RequiredArgsConstructor
 @Slf4j
+@RequiredArgsConstructor
+
 @Service
+@Transactional
 public class ProfileService {
     private final ProfileRepository profileRepository;
 
+    @Transactional(readOnly = true)
     public Profile getCurrentProfile(String keycloakId) {
         log.debug("Get current profile keycloakId: {}", keycloakId);
         return profileRepository.findProfileByAuthProviderId(keycloakId)
                 .orElseThrow(() -> new EntityNotFoundException("No profile found for keycloakId: " + keycloakId));
     }
 
+    @Transactional(readOnly = true)
     public Profile getProfile(Long postId) {
         log.debug("Get profile by id: {}", postId);
         return profileRepository.findById(postId)
@@ -69,12 +71,5 @@ public class ProfileService {
         }
 
         return profileRepository.save(saved);
-    }
-
-    public Map<Long, Profile> getProfilesByIds(List<Long> ids) {
-        log.debug("Get profiles by ids: {}", ids);
-        return profileRepository
-                .findAllByIdIn(ids).stream()
-                .collect(Collectors.toMap(Profile::getId, profile -> profile));
     }
 }

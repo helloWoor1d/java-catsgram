@@ -5,3 +5,5 @@ databaseChangeLog:
       file: db/changelog/changeset/update-profiles-id-sequence.yaml
   - include:
       file: db/changelog/changeset/2025-09-7-create-follows-table.yaml
+  - include:
+      file: db/changelog/changeset/2025-09-08-update-follows-id-seq.yaml
