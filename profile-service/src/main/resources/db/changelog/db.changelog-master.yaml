@@ -2,8 +2,8 @@ databaseChangeLog:
   - include:
       file: db/changelog/changeset/create-profiles-table.yaml
   - include:
-      file: db/changelog/changeset/update-profiles-id-sequence.yaml
+      file: db/changelog/changeset/create-profiles-id-sequence.yaml
   - include:
       file: db/changelog/changeset/2025-09-7-create-follows-table.yaml
   - include:
-      file: db/changelog/changeset/2025-09-08-update-follows-id-seq.yaml
+      file: db/changelog/changeset/2025-09-08-create-follows-id-seq.yaml

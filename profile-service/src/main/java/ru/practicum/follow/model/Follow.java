@@ -33,7 +33,7 @@ public class Follow {
     @GeneratedValue(strategy = GenerationType.SEQUENCE,
             generator = "id_seq")
     @SequenceGenerator(name = "id_seq",
-            sequenceName = "follows_id_seq",
+            sequenceName = "follows_seq_id",
             allocationSize = 15)
     private Long id;
 

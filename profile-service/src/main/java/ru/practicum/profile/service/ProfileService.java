@@ -5,8 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.profile.event.UserDeletedEvent;
-import ru.practicum.profile.event.UserRegisteredEvent;
+import ru.practicum.exception.ProfileDeactivatedException;
 import ru.practicum.profile.model.Profile;
 import ru.practicum.profile.repository.ProfileRepository;
 
@@ -21,40 +20,38 @@ public class ProfileService {
     private final ProfileRepository profileRepository;
 
     @Transactional(readOnly = true)
-    public Profile getCurrentProfile(String keycloakId) {
-        log.debug("Get current profile keycloakId: {}", keycloakId);
-        return profileRepository.findProfileByAuthProviderId(keycloakId)
-                .orElseThrow(() -> new EntityNotFoundException("No profile found for keycloakId: " + keycloakId));
+    public Profile getCurrentProfile(String authId) {
+        log.debug("Get current profile authId: {}", authId);
+        return profileRepository.findProfileByAuthProviderId(authId)
+                .orElseThrow(() -> new EntityNotFoundException("No profile found for authId: " + authId));
     }
 
     @Transactional(readOnly = true)
-    public Profile getProfile(Long postId) {
-        log.debug("Get profile by id: {}", postId);
-        return profileRepository.findById(postId)
-                .orElseThrow(() -> new EntityNotFoundException("No profile found for id: " + postId));
+    public Profile getProfile(Long profId) {
+        log.debug("Get profile by id: {}", profId);
+        Profile profile = profileRepository.findById(profId)
+                .orElseThrow(() -> new EntityNotFoundException("No profile found for id: " + profId));
+
+        if (profile.getDeactivated()) throw new ProfileDeactivatedException();
+        return profile;
     }
 
-    public void createProfile(UserRegisteredEvent event) {
-        Profile profile = Profile.builder()
-                .authProviderId(event.getUserId())
-                .login(event.getUsername())
-                .email(event.getEmail())
-                .createdAt(LocalDateTime.now())
-                .build();
-
-        profileRepository.save(profile);
-        log.debug("Create profile for user with email {}", event.getEmail());
+    public Profile createProfile(Profile profile) {
+        log.debug("Create profile for user with email {}", profile.getEmail());
+        return profileRepository.save(profile);
     }
 
-    public void deactivateProfile(UserDeletedEvent event) {
-        Profile profile = profileRepository.findProfileByAuthProviderId(event.getUserId())
+    public void deactivateProfile(Profile profile) {
+        Profile saved = profileRepository.findProfileByAuthProviderId(profile.getAuthProviderId())
                 .orElseThrow(() ->
                         new EntityNotFoundException("Profile not found"));
 
-        profile.setDeactivated(true);
-        profile.setDeactivatedAt(LocalDateTime.now());
-        profileRepository.save(profile);
-        log.debug("Profile deactivated {}", event.getUserId());
+        if(saved.getDeactivated()) return;
+
+        saved.setDeactivated(true);
+        saved.setDeactivatedAt(LocalDateTime.now());
+        profileRepository.save(saved);
+        log.debug("Profile deactivated {}", profile.getId());
     }
 
     public Profile updateProfile(Profile profile) {

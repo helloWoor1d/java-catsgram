@@ -3,9 +3,9 @@ databaseChangeLog:
       id: 2025-09-08-update-follows-id-seq
       author: mira
       changes:
-        - alterSequence:
+        - createSequence:
             schemaName: public
-            sequenceName: follows_id_seq
+            sequenceName: follows_seq_id
             startValue: 1
             minValue: 1
             incrementBy: 15

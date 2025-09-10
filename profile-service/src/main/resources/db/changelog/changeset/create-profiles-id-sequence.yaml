@@ -3,9 +3,10 @@ databaseChangeLog:
       id: create-profiles-id-seq
       author: mira
       changes:
-        - alterSequence:
+        - createSequence:
+            schemaName: public
+            sequenceName: profiles_seq_id
             startValue: 1
             minValue: 1
-            cacheSize: 3
             incrementBy: 15
-            sequenceName: profiles_id_seq
+            cacheSize: 3

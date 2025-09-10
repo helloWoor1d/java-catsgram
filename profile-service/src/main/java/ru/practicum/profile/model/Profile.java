@@ -30,7 +30,7 @@ public class Profile {
     @GeneratedValue(generator = "id_seq", strategy = GenerationType.SEQUENCE)
     @SequenceGenerator(
             name = "id_seq",
-            sequenceName = "profiles_id_seq",
+            sequenceName = "profiles_seq_id",
             allocationSize = 15)
     private Long id;
 

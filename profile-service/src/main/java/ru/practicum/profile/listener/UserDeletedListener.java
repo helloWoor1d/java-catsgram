@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 import ru.practicum.profile.event.UserDeletedEvent;
+import ru.practicum.profile.model.Profile;
 import ru.practicum.profile.service.ProfileService;
 
 @RequiredArgsConstructor
@@ -17,7 +18,12 @@ public class UserDeletedListener {
             groupId = "user-service-group",
             containerFactory = "userDeletedEventContainerFactory")
     public void userDeleted(UserDeletedEvent event) {
-        profileService.deactivateProfile(event);
-        log.info("Listener: user deleted: {}", event.getUserId());
+        Profile profile = Profile.builder()
+                .authProviderId(event.getUserId())
+                .deactivatedAt(event.getDeletedAt())
+                .build();
+
+        profileService.deactivateProfile(profile);
+        log.info("User deleted: {}", event.getUserId());
     }
 }
