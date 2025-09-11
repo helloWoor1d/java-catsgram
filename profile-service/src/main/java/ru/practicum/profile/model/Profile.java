@@ -55,4 +55,8 @@ public class Profile {
 
     @Column(name = "deactivated_at")
     private LocalDateTime deactivatedAt;
+
+    @Column(name = "private")
+    @Builder.Default
+    private Boolean privateProfile = Boolean.FALSE;
 }

@@ -7,9 +7,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.exception.ProfileDeactivatedException;
 import ru.practicum.profile.model.Profile;
+import ru.practicum.profile.model.ProfileShort;
 import ru.practicum.profile.repository.ProfileRepository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -46,7 +48,7 @@ public class ProfileService {
                 .orElseThrow(() ->
                         new EntityNotFoundException("Profile not found"));
 
-        if(saved.getDeactivated()) return;
+        if (saved.getDeactivated()) return;
 
         saved.setDeactivated(true);
         saved.setDeactivatedAt(LocalDateTime.now());
@@ -59,14 +61,31 @@ public class ProfileService {
         Profile saved = profileRepository.findProfileByAuthProviderId(profile.getAuthProviderId())
                 .orElseThrow(() -> new EntityNotFoundException("Profile not found"));
 
-        if(profile.getLogin() != null && !profile.getLogin().isBlank()) {         // toDo: mapstruct
+        if (profile.getLogin() != null && !profile.getLogin().isBlank()) {         // toDo: mapstruct
             saved.setLogin(profile.getLogin());
-        } if(profile.getBio() != null && !profile.getBio().isBlank()) {
+        }
+        if (profile.getBio() != null && !profile.getBio().isBlank()) {
             saved.setBio(profile.getBio());
-        } if(profile.getAvatarUrl() != null && !profile.getEmail().isBlank()) {
+        }
+        if (profile.getAvatarUrl() != null && !profile.getEmail().isBlank()) {
             saved.setAvatarUrl(profile.getAvatarUrl());
+        }
+        if (profile.getPrivateProfile() != null) {
+            saved.setPrivateProfile(profile.getPrivateProfile());
         }
 
         return profileRepository.save(saved);
+    }
+
+    public List<ProfileShort> getFollowers(String authProviderId) {
+        Profile profile = getCurrentProfile(authProviderId);
+        log.debug("Get followers for profile: {}", profile.getId());
+        return profileRepository.getFollowers(profile.getId());
+    }
+
+    public List<ProfileShort> getFollowings(String authProviderId) {
+        Profile profile = getCurrentProfile(authProviderId);
+        log.debug("Get followings for profile: {}", profile.getId());
+        return profileRepository.getFollowings(profile.getId());
     }
 }

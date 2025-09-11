@@ -10,6 +10,7 @@ import ru.practicum.profile.model.Profile;
 import ru.practicum.profile.service.ProfileService;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -39,5 +40,10 @@ public class FollowService {
 
         log.debug("{} unfollowed {}", current.getId(), followingId);
         followRepository.deleteByFollowerIdAndFollowingId(current.getId(), followingId);
+    }
+
+    public Optional<Follow> getFollow(Long followerId, Long followingId) {
+        log.debug("get follow - followerId: {}, followingId: {}", followerId, followingId);
+        return followRepository.findAllByFollowerIdAndFollowingId(followerId, followingId);
     }
 }

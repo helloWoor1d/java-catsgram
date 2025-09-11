@@ -50,3 +50,8 @@ databaseChangeLog:
               - column:
                   name: deactivated_at
                   type: timestamp
+              - column:
+                  name: private
+                  type: boolean
+                  constraints:
+                    nullable: false

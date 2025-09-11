@@ -2,6 +2,7 @@ package ru.practicum.profile.dto.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import ru.practicum.profile.dto.PrivateProfileView;
 import ru.practicum.profile.dto.ProfileView;
 import ru.practicum.profile.dto.UpdateProfileReq;
 import ru.practicum.profile.model.Profile;
@@ -17,4 +18,6 @@ public interface ProfileMapper {
     @Mapping(target = "deactivatedAt", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     Profile toProfile(UpdateProfileReq updateProfileReq, String authId);
+
+    PrivateProfileView toPrivateView(Profile profile);
 }

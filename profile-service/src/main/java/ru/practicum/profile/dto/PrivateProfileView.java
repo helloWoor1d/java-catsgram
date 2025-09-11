@@ -7,15 +7,13 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
 
-public class ProfileView implements ProfileResponse {
+public class PrivateProfileView implements ProfileResponse {
     private Long id;
-
-    private String email;
 
     private String login;
 
