@@ -1,4 +1,4 @@
-package ru.practicum.profile.dto;
+package ru.practicum.profile.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -6,16 +6,16 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
 
-public class ProfileView implements ProfileResponse {
+public class ProfileView {
     private Long id;
-
-    private String email;
 
     private String login;
 
@@ -24,7 +24,7 @@ public class ProfileView implements ProfileResponse {
     private String avatarUrl;
 
     @Builder.Default
-    private Integer postCount = 0;
+    private Integer postsCount = 0;
 
     @Builder.Default
     private Integer followersCount = 0;
@@ -32,5 +32,10 @@ public class ProfileView implements ProfileResponse {
     @Builder.Default
     private Integer followingCount = 0;
 
-    private Boolean privateProfile;
+    @Builder.Default
+    private List<String> posts = null;
+
+    private Boolean isFollowing;
+
+    private Boolean isPrivate;
 }

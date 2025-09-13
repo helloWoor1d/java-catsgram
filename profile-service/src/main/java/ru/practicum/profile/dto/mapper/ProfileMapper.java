@@ -2,14 +2,22 @@ package ru.practicum.profile.dto.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import ru.practicum.profile.dto.PrivateProfileView;
-import ru.practicum.profile.dto.ProfileView;
+import ru.practicum.profile.dto.ProfileShortDto;
+import ru.practicum.profile.dto.ProfileViewDto;
 import ru.practicum.profile.dto.UpdateProfileReq;
 import ru.practicum.profile.model.Profile;
+import ru.practicum.profile.model.ProfileShort;
+import ru.practicum.profile.model.ProfileView;
+
+import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface ProfileMapper {
-    ProfileView toView(Profile profile);
+    ProfileViewDto toView(Profile profile);
+
+    ProfileViewDto toView(ProfileView profileView);
+
+    List<ProfileViewDto> toViews(List<Profile> profiles);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "authProviderId", source = "authId")
@@ -19,5 +27,7 @@ public interface ProfileMapper {
     @Mapping(target = "createdAt", ignore = true)
     Profile toProfile(UpdateProfileReq updateProfileReq, String authId);
 
-    PrivateProfileView toPrivateView(Profile profile);
+    ProfileShortDto toShortDto(ProfileShort profileShort);
+
+    List<ProfileShortDto> toShortDto(List<ProfileShort> profileShort);
 }

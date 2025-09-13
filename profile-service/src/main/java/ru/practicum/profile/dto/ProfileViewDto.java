@@ -6,13 +6,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
 
-public class PrivateProfileView implements ProfileResponse {
+public class ProfileViewDto {
     private Long id;
 
     private String login;
@@ -22,7 +24,7 @@ public class PrivateProfileView implements ProfileResponse {
     private String avatarUrl;
 
     @Builder.Default
-    private Integer postCount = 0;
+    private Integer postsCount = 0;
 
     @Builder.Default
     private Integer followersCount = 0;
@@ -30,5 +32,10 @@ public class PrivateProfileView implements ProfileResponse {
     @Builder.Default
     private Integer followingCount = 0;
 
-    private Boolean privateProfile;
+    @Builder.Default
+    private List<String> posts = null;
+
+    private Boolean isFollowing;
+
+    private Boolean isPrivate;
 }

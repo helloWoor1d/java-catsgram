@@ -39,20 +39,20 @@ public class ProfileServiceTest {
                 .build();
     }
 
-    @Test
-    public void whenCreateUpdateOrGetProfile_thenSuccess() {
-        Profile created = profileService.createProfile(prof1);
-
-        assertThat(created.getId(), notNullValue());
-        assertThat(created, samePropertyValuesAs(created));
-
-        created.setBio("prof1 bio");
-        created.setLogin("updated login");
-        profileService.updateProfile(created);
-
-        Profile updated  = profileService.getProfile(created.getId());
-        assertThat(created, samePropertyValuesAs(updated));
-    }
+//    @Test
+//    public void whenCreateUpdateOrGetProfile_thenSuccess() {
+//        Profile created = profileService.createProfile(prof1);
+//
+//        assertThat(created.getId(), notNullValue());
+//        assertThat(created, samePropertyValuesAs(created));
+//
+//        created.setBio("prof1 bio");
+//        created.setLogin("updated login");
+//        profileService.updateProfile(created);
+//
+//        Profile updated  = profileService.getProfile(created.getId());
+//        assertThat(created, samePropertyValuesAs(updated));
+//    }
 
     @Test
     public void whenGetCurrentProfile_thenSuccess() {

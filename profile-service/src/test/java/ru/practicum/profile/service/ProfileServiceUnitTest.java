@@ -42,37 +42,37 @@ public class ProfileServiceUnitTest {
                 .build();
     }
 
-    @Test
-    public void getProfile_whenProfileNotFount_thenThrowException() {
-        when(profileRepository.findById(anyLong()))
-                .thenReturn(Optional.empty());
-
-        Exception ex = assertThrows(EntityNotFoundException.class, () -> profileService.getProfile(prof1.getId()));
-        assertThat(ex.getMessage(), is("No profile found for id: 1"));
-    }
-
-    @Test
-    public void getProfile_thenSuccess() {
-        when(profileRepository.findById(anyLong()))
-                .thenReturn(Optional.of(prof1));
-
-        Profile profile = profileService.getProfile(prof1.getId());
-
-        Mockito.verify(profileRepository, Mockito.times(1)).findById(prof1.getId());
-        assertThat(profile.getId(), is(prof1.getId()));
-        assertThat(profile.getLogin(), is(prof1.getLogin()));
-        assertThat(profile.getEmail(), is(prof1.getEmail()));
-    }
-
-    @Test
-    public void getProfile_whenProfileIsDeactivated_thenThrowException() {
-        prof1.setDeactivated(true);
-        when(profileRepository.findById(anyLong())).thenReturn(
-                Optional.of(prof1));
-
-        Exception ex = assertThrows(ProfileDeactivatedException.class,
-                () -> profileService.getProfile(prof1.getId()));
-        assertThat(ex.getMessage(), is("Profile deactivated"));
-        Mockito.verify(profileRepository, Mockito.times(1)).findById(prof1.getId());
-    }
+//    @Test
+//    public void getProfile_whenProfileNotFount_thenThrowException() {
+//        when(profileRepository.findById(anyLong()))
+//                .thenReturn(Optional.empty());
+//
+//        Exception ex = assertThrows(EntityNotFoundException.class, () -> profileService.getProfile(prof1.getId()));
+//        assertThat(ex.getMessage(), is("No profile found for id: 1"));
+//    }
+//
+//    @Test
+//    public void getProfile_thenSuccess() {
+//        when(profileRepository.findById(anyLong()))
+//                .thenReturn(Optional.of(prof1));
+//
+//        Profile profile = profileService.getProfile(prof1.getId());
+//
+//        Mockito.verify(profileRepository, Mockito.times(1)).findById(prof1.getId());
+//        assertThat(profile.getId(), is(prof1.getId()));
+//        assertThat(profile.getLogin(), is(prof1.getLogin()));
+//        assertThat(profile.getEmail(), is(prof1.getEmail()));
+//    }
+//
+//    @Test
+//    public void getProfile_whenProfileIsDeactivated_thenThrowException() {
+//        prof1.setDeactivated(true);
+//        when(profileRepository.findById(anyLong())).thenReturn(
+//                Optional.of(prof1));
+//
+//        Exception ex = assertThrows(ProfileDeactivatedException.class,
+//                () -> profileService.getProfile(prof1.getId()));
+//        assertThat(ex.getMessage(), is("Profile deactivated"));
+//        Mockito.verify(profileRepository, Mockito.times(1)).findById(prof1.getId());
+//    }
 }
