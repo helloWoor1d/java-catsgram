@@ -2,6 +2,7 @@ package ru.practicum.profile.dto.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.springframework.data.domain.Page;
 import ru.practicum.profile.dto.ProfileShortDto;
 import ru.practicum.profile.dto.ProfileViewDto;
 import ru.practicum.profile.dto.UpdateProfileReq;
@@ -28,6 +29,4 @@ public interface ProfileMapper {
     Profile toProfile(UpdateProfileReq updateProfileReq, String authId);
 
     ProfileShortDto toShortDto(ProfileShort profileShort);
-
-    List<ProfileShortDto> toShortDto(List<ProfileShort> profileShort);
 }

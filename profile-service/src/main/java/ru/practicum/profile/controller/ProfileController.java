@@ -1,6 +1,7 @@
 package ru.practicum.profile.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import ru.practicum.follow.model.Follow;
@@ -18,8 +20,6 @@ import ru.practicum.profile.dto.ProfileViewDto;
 import ru.practicum.profile.dto.mapper.ProfileMapper;
 import ru.practicum.profile.model.Profile;
 import ru.practicum.profile.service.ProfileService;
-
-import java.util.List;
 
 
 @RestController
@@ -55,17 +55,22 @@ public class ProfileController {
     }
 
     @GetMapping("/{profileId}/followers")
-    public List<ProfileShortDto> getFollowers(@AuthenticationPrincipal Jwt jwt,     //toDo: пагинация
-                                              @PathVariable Long profileId) {
+    public Page<ProfileShortDto> getFollowers(@AuthenticationPrincipal Jwt jwt,
+                                              @PathVariable Long profileId,
+                                              @RequestParam(required = false, defaultValue = "0") Integer page,
+                                              @RequestParam(required = false, defaultValue = "15") Integer size) {
         Profile viewer = profileService.getCurrentProfile(jwt.getSubject());
-        return profileMapper.toShortDto(
-                profileService.getFollowers(viewer, profileId));
+        return profileService.getFollowers(viewer, profileId, page, size)
+                .map(profileMapper::toShortDto);
     }
 
     @GetMapping("/{profileId}/following")
-    public List<ProfileShortDto> getFollowings(@AuthenticationPrincipal Jwt jwt,
-                                              @PathVariable Long profileId) {
+    public Page<ProfileShortDto> getFollowings(@AuthenticationPrincipal Jwt jwt,
+                                               @PathVariable Long profileId,
+                                               @RequestParam(required = false, defaultValue = "0") Integer page,
+                                               @RequestParam(required = false, defaultValue = "15") Integer size) {
         Profile viewer = profileService.getCurrentProfile(jwt.getSubject());
-        return profileMapper.toShortDto(profileService.getFollowings(viewer, profileId));
+        return profileService.getFollowings(viewer, profileId, page, size)
+                .map(profileMapper::toShortDto);
     }
 }

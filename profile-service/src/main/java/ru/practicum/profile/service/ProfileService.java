@@ -3,6 +3,9 @@ package ru.practicum.profile.service;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.exception.ProfileDeactivatedException;
@@ -95,45 +98,51 @@ public class ProfileService {
     }
 
     @Transactional(readOnly = true)
-    public List<ProfileShort> getFollowers(Profile viewer, Long followingId) {
+    public Page<ProfileShort> getFollowers(Profile viewer, Long followingId,
+                                           Integer page, Integer size) {
+        Pageable pageable = PageRequest.of(page, size);
         if (viewer.getId().equals(followingId)) {
             log.debug("Profile {} get its followers", viewer.getId());
-            return followService.getFollowers(viewer.getId());
+            return followService.getFollowers(viewer.getId(), pageable);
         }
         Profile profile = getProfileById(followingId);
         if (!profile.getPrivateProfile()) {
             log.debug("Get followers for public profile {} by {}", followingId, viewer.getId());
-            return followService.getFollowers(followingId);
+            return followService.getFollowers(followingId, pageable);
         }
-        return getPrivateProfFollowers(viewer.getId(), followingId);
+        return getPrivateProfFollowers(viewer.getId(), followingId, pageable);
     }
 
-    private List<ProfileShort> getPrivateProfFollowers(Long viewerId, Long followingId) {
+    private Page<ProfileShort> getPrivateProfFollowers(Long viewerId, Long followingId,
+                                                       Pageable pageable) {
         log.debug("Get followers for private profile");
         if (followService.followExists(viewerId, followingId)) {
-            return followService.getFollowers(followingId);
+            return followService.getFollowers(followingId, pageable);
         }
         throw new RuntimeException("Доступ запрещен: приватный профиль, нельзя увидеть данные");
     }
 
     @Transactional(readOnly = true)
-    public List<ProfileShort> getFollowings(Profile viewer, Long followerId) {
+    public Page<ProfileShort> getFollowings(Profile viewer, Long followerId,
+                                            Integer page, Integer size) {
+        Pageable pageable = PageRequest.of(page, size);
         if (viewer.getId().equals(followerId)) {
             log.debug("Profile {} get its followings", viewer.getId());
-            return followService.getFollowings(viewer.getId());
+            return followService.getFollowings(viewer.getId(), pageable);
         }
         Profile profile = getProfileById(followerId);
         if (!profile.getPrivateProfile()) {
             log.debug("Get followings for public profile {} by {}", followerId, viewer.getId());
-            return followService.getFollowings(followerId);
+            return followService.getFollowings(followerId, pageable);
         }
-        return getPrivateProfFollowings(viewer.getId(), followerId);
+        return getPrivateProfFollowings(viewer.getId(), followerId, pageable);
     }
 
-    private List<ProfileShort> getPrivateProfFollowings(Long viewerId, Long followerId) {
+    private Page<ProfileShort> getPrivateProfFollowings(Long viewerId, Long followerId,
+                                                        Pageable page) {
         log.debug("Get followings for private profile {} by {}", followerId, viewerId);
         if (followService.followExists(viewerId, followerId)) {
-            return followService.getFollowings(followerId);
+            return followService.getFollowings(followerId, page);
         }
         throw new RuntimeException("Доступ запрещен: приватный профиль, нельзя увидеть данные");
     }

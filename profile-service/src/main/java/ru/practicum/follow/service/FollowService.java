@@ -2,6 +2,8 @@ package ru.practicum.follow.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.follow.model.Follow;
@@ -47,14 +49,14 @@ public class FollowService {
         return followRepository.findAllByFollowerIdAndFollowingId(followerId, followingId);
     }
 
-    public List<ProfileShort> getFollowers(Long followingId) {
+    public Page<ProfileShort> getFollowers(Long followingId, Pageable page) {
         log.debug("Get followers - for: {}", followingId);
-        return followRepository.getFollowers(followingId);
+        return followRepository.getFollowers(followingId, page);
     }
 
-    public List<ProfileShort> getFollowings(Long followerId){
+    public Page<ProfileShort> getFollowings(Long followerId, Pageable page){
         log.debug("Get followings - for: {}", followerId);
-        return followRepository.getFollowings(followerId);
+        return followRepository.getFollowings(followerId, page);
     }
 
     public boolean followExists(Long followerId, Long followingId) {
