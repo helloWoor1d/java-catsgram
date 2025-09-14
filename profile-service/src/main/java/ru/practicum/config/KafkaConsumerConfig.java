@@ -10,8 +10,8 @@ import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
-import ru.practicum.event.UserDeletedEvent;
-import ru.practicum.event.UserRegisteredEvent;
+import ru.practicum.profile.event.UserDeletedEvent;
+import ru.practicum.profile.event.UserRegisteredEvent;
 
 import java.util.HashMap;
 import java.util.Map;

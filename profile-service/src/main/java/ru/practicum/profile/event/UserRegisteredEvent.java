@@ -1,4 +1,4 @@
-package ru.practicum.event;
+package ru.practicum.profile.event;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

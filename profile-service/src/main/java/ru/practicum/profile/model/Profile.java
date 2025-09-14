@@ -1,4 +1,4 @@
-package ru.practicum.model;
+package ru.practicum.profile.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -30,7 +30,7 @@ public class Profile {
     @GeneratedValue(generator = "id_seq", strategy = GenerationType.SEQUENCE)
     @SequenceGenerator(
             name = "id_seq",
-            sequenceName = "profiles_id_seq",
+            sequenceName = "profiles_seq_id",
             allocationSize = 15)
     private Long id;
 
@@ -55,4 +55,8 @@ public class Profile {
 
     @Column(name = "deactivated_at")
     private LocalDateTime deactivatedAt;
+
+    @Column(name = "private")
+    @Builder.Default
+    private Boolean privateProfile = Boolean.FALSE;
 }

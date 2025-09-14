@@ -1,6 +1,6 @@
 databaseChangeLog:
   - changeSet:
-      id: create-profile-table
+      id: create-profiles-table
       author: mira
       changes:
         - createTable:
@@ -14,7 +14,7 @@ databaseChangeLog:
                     primaryKey: true
                     nullable: false
               - column:
-                  name: oauth_id
+                  name: auth_id
                   type: varchar(150)
                   constraints:
                     nullable: false
@@ -50,3 +50,8 @@ databaseChangeLog:
               - column:
                   name: deactivated_at
                   type: timestamp
+              - column:
+                  name: private
+                  type: boolean
+                  constraints:
+                    nullable: false
