@@ -1,6 +1,5 @@
 package ru.practicum.profile.service;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -8,6 +7,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.exception.AccessDeniedForProfileException;
+import ru.practicum.exception.DataNotFoundException;
 import ru.practicum.exception.ProfileDeactivatedException;
 import ru.practicum.follow.model.Follow;
 import ru.practicum.follow.service.FollowService;
@@ -36,15 +37,24 @@ public class ProfileService {
     }
 
     @Transactional(readOnly = true)
+    public ProfileView getCurrentProfileView(String authId) {
+        log.info("Get current profile view for authId: {}", authId);
+        Profile profile = getProfileByAuthId(authId);
+        return buildProfileView(profile, profile);
+    }
+
+    @Transactional(readOnly = true)
     public ProfileView getProfileForViewer(Profile viewer, Long profileId) {
-        log.debug("Get profile {} for viewer: {}", profileId, viewer.getId());
+        log.info("Get profile {} for viewer: {}", profileId, viewer.getId());
         Profile profile = getProfileById(profileId);
 
-        if (profile.getDeactivated()) throw new ProfileDeactivatedException();
+        if (profile.getDeactivated()) throw new ProfileDeactivatedException("Profile deactivated");
+        return buildProfileView(viewer, profile);
+    }
 
-        boolean followExist = followService.followExists(viewer.getId(), profileId);
-        boolean canSeeFull = !profile.getPrivateProfile() || followExist;
-
+    private ProfileView buildProfileView(Profile viewer, Profile profile) {
+        boolean followExist = followService.followExists(viewer.getId(), profile.getId());
+        boolean canSeeFull = viewer.getId().equals(profile.getId()) || !profile.getPrivateProfile() || followExist;
         ProfileView profileView = ProfileView.builder()
                 .id(profile.getId())
                 .bio(profile.getBio())
@@ -54,16 +64,15 @@ public class ProfileService {
                 .followingCount(null)
                 .followersCount(null)
                 .isPrivate(profile.getPrivateProfile())
-                .isFollowing(followExist)
                 .build();
         if (canSeeFull) {
-            // toDo: заполняем посты
+            profileView.setPosts(List.of());
         }
         return profileView;
     }
 
     public Profile createProfile(Profile profile) {
-        log.debug("Create profile for user with email {}", profile.getEmail());
+        log.info("Create profile for user with email {}", profile.getEmail());
         return profileRepository.save(profile);
     }
 
@@ -74,10 +83,10 @@ public class ProfileService {
         saved.setDeactivated(true);
         saved.setDeactivatedAt(LocalDateTime.now());
         profileRepository.save(saved);
-        log.debug("Profile deactivated {}", profile.getId());
+        log.info("Profile deactivated {}", profile.getId());
     }
 
-    public Profile updateProfile(Profile profile) {
+    public ProfileView updateProfile(Profile profile) {
         log.debug("Update profile {}", profile.getAuthProviderId());
         Profile saved = getProfileByAuthId(profile.getAuthProviderId());
 
@@ -87,14 +96,15 @@ public class ProfileService {
         if (profile.getBio() != null && !profile.getBio().isBlank()) {
             saved.setBio(profile.getBio());
         }
-        if (profile.getAvatarUrl() != null && !profile.getEmail().isBlank()) {
+        if (profile.getAvatarUrl() != null && !profile.getAvatarUrl().isBlank()) {
             saved.setAvatarUrl(profile.getAvatarUrl());
         }
         if (profile.getPrivateProfile() != null) {
             saved.setPrivateProfile(profile.getPrivateProfile());
         }
 
-        return profileRepository.save(saved);
+        profile = profileRepository.save(saved);
+        return buildProfileView(profile, profile);
     }
 
     @Transactional(readOnly = true)
@@ -119,7 +129,7 @@ public class ProfileService {
         if (followService.followExists(viewerId, followingId)) {
             return followService.getFollowers(followingId, pageable);
         }
-        throw new RuntimeException("Доступ запрещен: приватный профиль, нельзя увидеть данные");
+        throw new AccessDeniedForProfileException("Приватный профиль, нельзя получить данные");
     }
 
     @Transactional(readOnly = true)
@@ -144,7 +154,7 @@ public class ProfileService {
         if (followService.followExists(viewerId, followerId)) {
             return followService.getFollowings(followerId, page);
         }
-        throw new RuntimeException("Доступ запрещен: приватный профиль, нельзя увидеть данные");
+        throw new AccessDeniedForProfileException("Приватный профиль, нельзя получить данные");
     }
 
     public Follow follow(Long followerId, Long followingId) {
@@ -162,19 +172,24 @@ public class ProfileService {
     private Map<Long, Profile> getProfilesByIds(List<Long> ids) {
         log.debug("Get profiles by ids {}", ids);
         List<Profile> profiles = profileRepository.findAllByIdIn(ids);
-        return profiles.stream()
+        Map<Long, Profile> result = profiles.stream()
                 .collect(Collectors.toMap(Profile::getId, p -> p));
+        if (profiles.size() < ids.size()) {
+            List<Long> missing = ids.stream().filter(id -> !result.containsKey(id)).toList();
+            throw new DataNotFoundException("Not found profile for id " + missing);
+        }
+        return result;
     }
 
     private Profile getProfileById(Long id) {
         log.debug("Get profile by id {}", id);
         return profileRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("No profile found for id: " + id));
+                .orElseThrow(() -> new DataNotFoundException("No profile found for id: " + id));
     }
 
     private Profile getProfileByAuthId(String authId) {
         log.debug("Get profile by authId: {}", authId);
         return profileRepository.findProfileByAuthProviderId(authId)
-                .orElseThrow(() -> new EntityNotFoundException("No profile found for authId: " + authId));
+                .orElseThrow(() -> new DataNotFoundException("No profile found for authId: " + authId));
     }
 }

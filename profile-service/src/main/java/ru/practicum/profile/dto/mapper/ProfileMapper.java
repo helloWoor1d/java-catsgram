@@ -14,9 +14,7 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface ProfileMapper {
-    ProfileViewDto toView(Profile profile);
-
-    ProfileViewDto toView(ProfileView profileView);
+    ProfileViewDto toView(ProfileView profileView); // toDo: настроить маппер на невыдачу null-полей
 
     List<ProfileViewDto> toViews(List<Profile> profiles);
 

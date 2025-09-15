@@ -29,12 +29,12 @@ public class ProfileMyController {
         String authId = jwt.getSubject();
 
         return ResponseEntity.ok(profileMapper.toView(
-                profileService.getCurrentProfile(authId)));
+                profileService.getCurrentProfileView(authId)));
     }
 
     @PatchMapping
     public ResponseEntity<ProfileViewDto> updateMyProfile(@AuthenticationPrincipal Jwt jwt,
-                                                           @RequestBody @Valid UpdateProfileReq updateReq) {
+                                                          @RequestBody @Valid UpdateProfileReq updateReq) {
         String authId = jwt.getSubject();
         Profile profile = profileMapper.toProfile(updateReq, authId);
 

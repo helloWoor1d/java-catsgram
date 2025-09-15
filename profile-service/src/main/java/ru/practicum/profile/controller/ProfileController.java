@@ -1,5 +1,7 @@
 package ru.practicum.profile.controller;
 
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -31,7 +33,7 @@ public class ProfileController {
 
     @GetMapping("/{profileId}")
     public ResponseEntity<ProfileViewDto> getProfile(@AuthenticationPrincipal Jwt jwt,
-                                                      @PathVariable Long profileId) {
+                                                     @PathVariable Long profileId) {
         Profile viewer = profileService.getCurrentProfile(jwt.getSubject());
         return ResponseEntity.ok(profileMapper.toView(
                 profileService.getProfileForViewer(viewer, profileId)));
@@ -42,11 +44,11 @@ public class ProfileController {
     public ResponseEntity<Follow> followProfile(@AuthenticationPrincipal Jwt jwt,
                                                 @PathVariable Long profileId) {
         Profile viewer = profileService.getCurrentProfile(jwt.getSubject());
-        return ResponseEntity.ok(
+        return ResponseEntity.status(HttpStatus.CREATED).body(
                 profileService.follow(viewer.getId(), profileId));
     }
 
-    @DeleteMapping("/{profileId}/unfollow")
+    @DeleteMapping("/{profileId}/follow")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void unfollowProfile(@AuthenticationPrincipal Jwt jwt,
                                 @PathVariable Long profileId) {
@@ -57,8 +59,8 @@ public class ProfileController {
     @GetMapping("/{profileId}/followers")
     public Page<ProfileShortDto> getFollowers(@AuthenticationPrincipal Jwt jwt,
                                               @PathVariable Long profileId,
-                                              @RequestParam(required = false, defaultValue = "0") Integer page,
-                                              @RequestParam(required = false, defaultValue = "15") Integer size) {
+                                              @Min (0) @Max (100) @RequestParam(required = false, defaultValue = "0") Integer page,
+                                              @Min (0) @Max (100) @RequestParam(required = false, defaultValue = "15") Integer size) {
         Profile viewer = profileService.getCurrentProfile(jwt.getSubject());
         return profileService.getFollowers(viewer, profileId, page, size)
                 .map(profileMapper::toShortDto);
@@ -67,8 +69,8 @@ public class ProfileController {
     @GetMapping("/{profileId}/following")
     public Page<ProfileShortDto> getFollowings(@AuthenticationPrincipal Jwt jwt,
                                                @PathVariable Long profileId,
-                                               @RequestParam(required = false, defaultValue = "0") Integer page,
-                                               @RequestParam(required = false, defaultValue = "15") Integer size) {
+                                               @Min (0) @Max (100) @RequestParam(required = false, defaultValue = "0") Integer page,
+                                               @Min (0) @Max (100) @RequestParam(required = false, defaultValue = "15") Integer size) {
         Profile viewer = profileService.getCurrentProfile(jwt.getSubject());
         return profileService.getFollowings(viewer, profileId, page, size)
                 .map(profileMapper::toShortDto);

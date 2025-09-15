@@ -2,6 +2,7 @@ package ru.practicum.follow.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -12,7 +13,6 @@ import ru.practicum.profile.model.Profile;
 import ru.practicum.profile.model.ProfileShort;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -24,7 +24,7 @@ public class FollowService {
 
     public Follow follow(Profile follower, Profile following) {
         if (followExists(follower.getId(), following.getId())) {
-            throw new RuntimeException("Follower already exists");
+            throw new DataIntegrityViolationException("Follower already exists");
         }
         Follow follow = Follow.builder()
                 .follower(follower)
@@ -38,7 +38,7 @@ public class FollowService {
 
     public void unfollow(Profile follower, Profile following) {
         if (!followExists(follower.getId(), following.getId())) {
-            throw new RuntimeException("Follower does not exist");
+            throw new DataIntegrityViolationException("Follower does not exist");
         }
         log.debug("{} unfollowed {}", follower.getId(), following);
         followRepository.deleteByFollowerIdAndFollowingId(follower.getId(), following.getId());
