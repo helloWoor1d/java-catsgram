@@ -8,7 +8,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.profile.model.Profile;
+import ru.practicum.profile.model.domain.Profile;
 import ru.practicum.profile.repository.ProfileRepository;
 
 import java.time.LocalDateTime;

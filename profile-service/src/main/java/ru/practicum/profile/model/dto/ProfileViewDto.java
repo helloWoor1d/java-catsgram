@@ -1,4 +1,4 @@
-package ru.practicum.profile.dto;
+package ru.practicum.profile.model.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

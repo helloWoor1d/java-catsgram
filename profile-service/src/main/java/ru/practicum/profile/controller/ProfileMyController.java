@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.practicum.profile.dto.ProfileViewDto;
-import ru.practicum.profile.dto.UpdateProfileReq;
-import ru.practicum.profile.dto.mapper.ProfileMapper;
-import ru.practicum.profile.model.Profile;
+import ru.practicum.profile.model.dto.ProfileViewDto;
+import ru.practicum.profile.model.dto.UpdateProfileReq;
+import ru.practicum.profile.model.dto.mapper.ProfileDtoMapper;
+import ru.practicum.profile.model.domain.Profile;
 import ru.practicum.profile.service.ProfileService;
 
 
@@ -22,13 +22,13 @@ import ru.practicum.profile.service.ProfileService;
 @RequiredArgsConstructor
 public class ProfileMyController {
     private final ProfileService profileService;
-    private final ProfileMapper profileMapper;
+    private final ProfileDtoMapper dtoMapper;
 
     @GetMapping
     public ResponseEntity<ProfileViewDto> getMyProfile(@AuthenticationPrincipal Jwt jwt) {
         String authId = jwt.getSubject();
 
-        return ResponseEntity.ok(profileMapper.toView(
+        return ResponseEntity.ok(dtoMapper.toView(
                 profileService.getCurrentProfileView(authId)));
     }
 
@@ -36,9 +36,9 @@ public class ProfileMyController {
     public ResponseEntity<ProfileViewDto> updateMyProfile(@AuthenticationPrincipal Jwt jwt,
                                                           @RequestBody @Valid UpdateProfileReq updateReq) {
         String authId = jwt.getSubject();
-        Profile profile = profileMapper.toProfile(updateReq, authId);
+        Profile profile = dtoMapper.toProfile(updateReq, authId);
 
-        return ResponseEntity.ok(profileMapper.toView(
+        return ResponseEntity.ok(dtoMapper.toView(
                 profileService.updateProfile(profile)));
     }
 }

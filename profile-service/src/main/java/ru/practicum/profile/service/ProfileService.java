@@ -12,9 +12,10 @@ import ru.practicum.exception.DataNotFoundException;
 import ru.practicum.exception.ProfileDeactivatedException;
 import ru.practicum.follow.model.Follow;
 import ru.practicum.follow.service.FollowService;
-import ru.practicum.profile.model.Profile;
-import ru.practicum.profile.model.ProfileShort;
-import ru.practicum.profile.model.ProfileView;
+import ru.practicum.profile.model.domain.Profile;
+import ru.practicum.profile.model.domain.ProfileShort;
+import ru.practicum.profile.model.domain.ProfileView;
+import ru.practicum.profile.model.domain.mapper.ProfileModelMapper;
 import ru.practicum.profile.repository.ProfileRepository;
 
 import java.time.LocalDateTime;
@@ -29,6 +30,7 @@ import java.util.stream.Collectors;
 public class ProfileService {
     private final ProfileRepository profileRepository;
     private final FollowService followService;
+    private final ProfileModelMapper profileMapper;
 
     @Transactional(readOnly = true)
     public Profile getCurrentProfile(String authId) {
@@ -52,25 +54,6 @@ public class ProfileService {
         return buildProfileView(viewer, profile);
     }
 
-    private ProfileView buildProfileView(Profile viewer, Profile profile) {
-        boolean followExist = followService.followExists(viewer.getId(), profile.getId());
-        boolean canSeeFull = viewer.getId().equals(profile.getId()) || !profile.getPrivateProfile() || followExist;
-        ProfileView profileView = ProfileView.builder()
-                .id(profile.getId())
-                .bio(profile.getBio())
-                .login(profile.getLogin())
-                .avatarUrl(profile.getAvatarUrl())
-                .postsCount(null)
-                .followingCount(null)
-                .followersCount(null)
-                .isPrivate(profile.getPrivateProfile())
-                .build();
-        if (canSeeFull) {
-            profileView.setPosts(List.of());
-        }
-        return profileView;
-    }
-
     public Profile createProfile(Profile profile) {
         log.info("Create profile for user with email {}", profile.getEmail());
         return profileRepository.save(profile);
@@ -90,19 +73,7 @@ public class ProfileService {
         log.debug("Update profile {}", profile.getAuthProviderId());
         Profile saved = getProfileByAuthId(profile.getAuthProviderId());
 
-        if (profile.getLogin() != null && !profile.getLogin().isBlank()) {         // toDo: mapstruct
-            saved.setLogin(profile.getLogin());
-        }
-        if (profile.getBio() != null && !profile.getBio().isBlank()) {
-            saved.setBio(profile.getBio());
-        }
-        if (profile.getAvatarUrl() != null && !profile.getAvatarUrl().isBlank()) {
-            saved.setAvatarUrl(profile.getAvatarUrl());
-        }
-        if (profile.getPrivateProfile() != null) {
-            saved.setPrivateProfile(profile.getPrivateProfile());
-        }
-
+        profileMapper.updateProfileFromUpdateRequest(saved, profile);
         profile = profileRepository.save(saved);
         return buildProfileView(profile, profile);
     }
@@ -191,5 +162,22 @@ public class ProfileService {
         log.debug("Get profile by authId: {}", authId);
         return profileRepository.findProfileByAuthProviderId(authId)
                 .orElseThrow(() -> new DataNotFoundException("No profile found for authId: " + authId));
+    }
+
+    private ProfileView buildProfileView(Profile viewer, Profile profile) {
+        boolean followExist = followService.followExists(viewer.getId(), profile.getId());
+        boolean canSeeFull = viewer.getId().equals(profile.getId()) || !profile.getPrivateProfile() || followExist;
+        ProfileView profileView = ProfileView.builder()
+                .id(profile.getId())
+                .bio(profile.getBio())
+                .login(profile.getLogin())
+                .avatarUrl(profile.getAvatarUrl())
+                .isPrivate(profile.getPrivateProfile())
+                .isFollowing(followExist)
+                .build();
+        if (canSeeFull) {
+            profileView.setPosts(List.of());
+        }
+        return profileView;
     }
 }

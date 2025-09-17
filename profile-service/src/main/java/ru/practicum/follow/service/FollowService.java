@@ -9,8 +9,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.follow.model.Follow;
 import ru.practicum.follow.repository.FollowRepository;
-import ru.practicum.profile.model.Profile;
-import ru.practicum.profile.model.ProfileShort;
+import ru.practicum.profile.model.domain.Profile;
+import ru.practicum.profile.model.domain.ProfileShort;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
