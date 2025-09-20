@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 import ru.practicum.profile.event.UserDeletedEvent;
-import ru.practicum.profile.model.Profile;
+import ru.practicum.profile.model.domain.Profile;
 import ru.practicum.profile.service.ProfileService;
 
 @RequiredArgsConstructor

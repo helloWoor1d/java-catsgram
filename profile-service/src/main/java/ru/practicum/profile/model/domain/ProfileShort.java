@@ -1,4 +1,4 @@
-package ru.practicum.profile.model;
+package ru.practicum.profile.model.domain;
 
 public interface ProfileShort {
     Long getId();

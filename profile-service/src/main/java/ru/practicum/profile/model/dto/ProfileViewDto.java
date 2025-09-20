@@ -1,4 +1,4 @@
-package ru.practicum.profile.model;
+package ru.practicum.profile.model.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,12 +9,12 @@ import lombok.Setter;
 import java.util.List;
 
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
 
-public class ProfileView {
+public class ProfileViewDto {
     private Long id;
 
     private String login;
